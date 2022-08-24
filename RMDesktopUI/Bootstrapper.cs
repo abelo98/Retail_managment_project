@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.Helpers;
+using RMDesktopUI.Library.Api;
 using RMDesktopUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using RMDesktopUI.Library.Models;
 
 namespace RMDesktopUI
 {
@@ -35,7 +37,8 @@ namespace RMDesktopUI
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .Singleton<IAPIHelper, APIHelper>();
+                .Singleton<IAPIHelper, APIHelper>()
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>();
 
 
             //Searches from all the types in the app those ended with "ViewModel"
@@ -52,7 +55,6 @@ namespace RMDesktopUI
 
 
         protected override void OnStartup(object sender, StartupEventArgs e) => DisplayRootViewForAsync<ShellViewModel>();
-
         protected override object GetInstance(Type service, string key) => _container.GetInstance(service, key);
         protected override IEnumerable<object> GetAllInstances(Type service) => _container.GetAllInstances(service);
         protected override void BuildUp(object instance) => _container.BuildUp(instance);

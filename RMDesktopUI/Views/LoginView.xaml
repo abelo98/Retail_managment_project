@@ -19,6 +19,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"
@@ -27,22 +28,29 @@
             Login Form
         </TextBlock>
         
-        <!--Username row-->
-        <TextBlock Grid.Column="1" Grid.Row="1" Margin="0 0 0 10">
+        <!-- Error Message row -->
+        <TextBlock x:Name="ErrorMessage" Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=collapsed}"
+                   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                   Margin="0 0 0 20" MaxWidth="305.157" Foreground="Red"
+                   TextWrapping="Wrap" 
+                   />
+
+        <!-- Username row -->
+        <TextBlock Grid.Column="1" Grid.Row="2" Margin="0 0 5 10">
             Username:
         </TextBlock>
-        <TextBox x:Name="UserName" Grid.Column="2" Grid.Row="1" Margin="0 0 0 10" 
-                 MinWidth="150"/>
+        <TextBox x:Name="UserName" Grid.Column="2" Grid.Row="2" Margin="0 0 0 10" 
+                 MinWidth="350"/>
 
-        <!--Passsword row-->
-        <TextBlock Grid.Column="1" Grid.Row="2" Margin="0 0 0 10">
+        <!-- Passsword row -->
+        <TextBlock Grid.Column="1" Grid.Row="3" Margin="0 0 5 10">
             Password:
         </TextBlock>
-        <PasswordBox x:Name="Password" Grid.Column="2" Grid.Row="2" Margin="0 0 0 10"
-                 MinWidth="150"/>
+        <PasswordBox x:Name="Password" Grid.Column="2" Grid.Row="3" Margin="0 0 0 10"
+                 MinWidth="350"/>
 
-        <!--Passsword row-->
-        <Button Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Padding="20 5"
+        <!-- Login row -->
+        <Button Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Padding="20 5"
                 HorizontalAlignment="Center" x:Name="LogIn"> Log In</Button>
     </Grid>
     
