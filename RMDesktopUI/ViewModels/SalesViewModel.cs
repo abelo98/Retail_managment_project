@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace RMDesktopUI.ViewModels
     {
         private BindingList<ProductModel> _products;
         private IProductEndpoint _productEndpoint;
+        private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
+            _configHelper = configHelper;
             _productEndpoint = productEndpoint;
 
         }
@@ -107,6 +110,8 @@ namespace RMDesktopUI.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => Subtotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
 
         }
 
@@ -138,38 +143,57 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                decimal subtotal = 0;
-                foreach (var item in Cart)
-                {
-                    subtotal += (item.QuantityInCart * item.ProductModel.RetailPrice);
-                }
-                return subtotal.ToString("C");
+                return CalculateSubTotal().ToString("C");
             }
         }
 
+        private decimal CalculateSubTotal()
+        {
+            decimal subtotal = 0;
+            foreach (var item in Cart)
+            {
+                subtotal += (item.QuantityInCart * item.ProductModel.RetailPrice);
+            }
+            return subtotal;
+        }
 
         public string Tax
         {
             get
             {
-                // TODO: replace for calculations
-                return "$0.00";
+                return CalculateTax().ToString("C");
             }
         }
 
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate();
+            foreach (var item in Cart)
+            {
+                if (item.ProductModel.IsTaxable)
+                {
+                    taxAmount += (item.QuantityInCart * item.ProductModel.RetailPrice * taxRate);
+                }
+            }
+            return taxAmount;
+        }
 
         public string Total
         {
             get
             {
-                // TODO: replace for calculations
-                return "$0.00";
+                decimal total = CalculateSubTotal() + CalculateTax();
+                return total.ToString("C");
             }
         }
 
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => Subtotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+
         }
 
         public bool CanCheckOut

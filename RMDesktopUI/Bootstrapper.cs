@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.Helpers;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Helpers;
+using RMDesktopUI.Library.Models;
 using RMDesktopUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using RMDesktopUI.Library.Models;
 
 namespace RMDesktopUI
 {
@@ -32,15 +33,16 @@ namespace RMDesktopUI
             //Whenever an instance of container is needed we'll provide _container
             _container.Instance(_container)
                 .PerRequest<IProductEndpoint, ProductEndpoint>();
-                   
+
 
             //It Creates a life application instace for WindowManager(work with windows)
             //and for EventAggregator(used to pass messanges throw out the app). 
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .Singleton<IAPIHelper, APIHelper>()
-                .Singleton<ILoggedInUserModel, LoggedInUserModel>();
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
+                .Singleton<IAPIHelper, APIHelper>();
 
 
             //Searches from all the types in the app those ended with "ViewModel"
