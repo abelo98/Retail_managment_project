@@ -30,7 +30,9 @@ namespace RMDesktopUI
         protected override void Configure()
         {
             //Whenever an instance of container is needed we'll provide _container
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndpoint, ProductEndpoint>();
+                   
 
             //It Creates a life application instace for WindowManager(work with windows)
             //and for EventAggregator(used to pass messanges throw out the app). 

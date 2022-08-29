@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RMDesktopUI.Library.Models
+{
+    public class CartItemModel
+    {
+        public ProductModel ProductModel { get; set; }
+
+        public int QuantityInCart { get; set; }
+
+        public string DisplayText { get { return $"{ProductModel.ProductName} ({QuantityInCart})"; } }
+    }
+}
