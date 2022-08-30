@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RMDesktopUI.Views"
              mc:Ignorable="d" Background="White" FontSize="24"
-             d:DesignHeight="650" d:DesignWidth="800">
+             d:DesignHeight="550" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width = "auto"/>
@@ -36,7 +36,19 @@
                  MinHeight="100" MinWidth="150" SelectedItem="{Binding SelectedProduct}" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text = "{Binding ProductName}" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text = "{Binding ProductName}" />
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Price: " FontSize="14"/>
+                                <TextBlock Text="{Binding RetailPrice, StringFormat={}{0:C}}" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                <TextBlock Text="Qty: " FontSize="14"/>
+                                <TextBlock Text="{Binding QuantityInStock}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
