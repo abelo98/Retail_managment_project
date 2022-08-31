@@ -79,6 +79,15 @@ namespace RMDesktopUI.ViewModels
             }
         }
 
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            await LoadProducts();
+            NotifyOfPropertyChange(() => Subtotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
 
         private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
@@ -221,6 +230,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanAddToCart);
 
 
         }
@@ -233,7 +243,7 @@ namespace RMDesktopUI.ViewModels
             }
         }
 
-        public void CheckOut()
+        public async void CheckOut()
         {
             SaleModel sale = new SaleModel();
             foreach (var item in Cart)
@@ -244,7 +254,8 @@ namespace RMDesktopUI.ViewModels
                     Quantity = item.QuantityInCart
                 });
             }
-            _saleEndpoint.PostSale(sale);
+            await _saleEndpoint.PostSale(sale);
+            await ResetSalesViewModel();
         }
 
     }
