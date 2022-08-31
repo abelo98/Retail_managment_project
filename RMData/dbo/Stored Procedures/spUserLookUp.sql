@@ -6,5 +6,5 @@ begin
 
 	SELECT Id, Firstname, LastName, EmailAddress, CreateDate
 	from [dbo].[User]
-	where Id = @Id
+	where Id = @Id;
 end

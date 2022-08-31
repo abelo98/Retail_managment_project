@@ -32,7 +32,8 @@ namespace RMDesktopUI
         {
             //Whenever an instance of container is needed we'll provide _container
             _container.Instance(_container)
-                .PerRequest<IProductEndpoint, ProductEndpoint>();
+                .PerRequest<IProductEndpoint, ProductEndpoint>()
+                .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
 
             //It Creates a life application instace for WindowManager(work with windows)

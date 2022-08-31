@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace RMDesktopUI.ViewModels
 {
-    public class LoginViewModel:Screen
+    public class LoginViewModel : Screen
     {
-        private string _userName;
-        private string _password;
+        private string _userName = "abelo@gmail.com";
+        private string _password = "Pwd12345.";
         private IAPIHelper _apiHelper;
         private IEventAggregator _events;
 
@@ -26,18 +26,21 @@ namespace RMDesktopUI.ViewModels
         public string UserName
         {
             get { return _userName; }
-            set { 
+            set
+            {
                 _userName = value;
                 NotifyOfPropertyChange(() => UserName);
                 NotifyOfPropertyChange(() => CanLogIn);
             }
-            
+
         }
 
         public string Password
         {
             get { return _password; }
-            set { _password = value;
+            set
+            {
+                _password = value;
                 NotifyOfPropertyChange(() => Password);
                 NotifyOfPropertyChange(() => CanLogIn);
             }
@@ -54,7 +57,7 @@ namespace RMDesktopUI.ViewModels
                 }
                 return output;
             }
-           
+
         }
 
         private string _errorMessage;
@@ -62,7 +65,9 @@ namespace RMDesktopUI.ViewModels
         public string ErrorMessage
         {
             get { return _errorMessage; }
-            set { _errorMessage = value;
+            set
+            {
+                _errorMessage = value;
                 NotifyOfPropertyChange(() => IsErrorVisible);
                 NotifyOfPropertyChange(() => ErrorMessage);
             }
@@ -94,9 +99,9 @@ namespace RMDesktopUI.ViewModels
             catch (Exception ex)
             {
 
-                ErrorMessage = ex.Message; 
+                ErrorMessage = ex.Message;
             }
-           
+
         }
 
     }

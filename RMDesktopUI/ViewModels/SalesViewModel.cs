@@ -16,12 +16,13 @@ namespace RMDesktopUI.ViewModels
         private BindingList<ProductModel> _products;
         private IProductEndpoint _productEndpoint;
         private IConfigHelper _configHelper;
+        private ISaleEndpoint _saleEndpoint;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _configHelper = configHelper;
             _productEndpoint = productEndpoint;
-
+            _saleEndpoint = saleEndpoint;
         }
 
         protected async override void OnViewLoaded(object view)
@@ -112,7 +113,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Subtotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
-
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart
@@ -168,7 +169,7 @@ namespace RMDesktopUI.ViewModels
         private decimal CalculateTax()
         {
             decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRate();
+            decimal taxRate = _configHelper.GetTaxRate() / 100;
 
             taxAmount = Cart
                 .Where(x => x.ProductModel.IsTaxable)
@@ -190,6 +191,8 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Subtotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+
 
         }
 
@@ -197,13 +200,23 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                bool output = false;
-                // Somthing is selected in the cart
-                return output;
+                return Cart.Count > 0;
             }
         }
 
-        public void CheckOut() { }
+        public void CheckOut()
+        {
+            SaleModel sale = new SaleModel();
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.ProductModel.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+            _saleEndpoint.PostSale(sale);
+        }
 
     }
 }
