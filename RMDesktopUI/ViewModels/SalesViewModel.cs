@@ -1,7 +1,9 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
+using RMDesktopUI.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,16 +15,19 @@ namespace RMDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private BindingList<ProductModel> _products;
+        private BindingList<ProductDisplayModel> _products;
         private IProductEndpoint _productEndpoint;
         private IConfigHelper _configHelper;
         private ISaleEndpoint _saleEndpoint;
+        private IMapper _mapper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper,
+            ISaleEndpoint saleEndpoint, IMapper mapper)
         {
             _configHelper = configHelper;
             _productEndpoint = productEndpoint;
             _saleEndpoint = saleEndpoint;
+            _mapper = mapper;
         }
 
         protected async override void OnViewLoaded(object view)
@@ -33,11 +38,12 @@ namespace RMDesktopUI.ViewModels
 
         public async Task LoadProducts()
         {
-            var products = await _productEndpoint.GetAll();
-            Products = new BindingList<ProductModel>(products);
+            var productList = await _productEndpoint.GetAll();
+            var products = _mapper.Map<List<ProductDisplayModel>>(productList);
+            Products = new BindingList<ProductDisplayModel>(products);
         }
 
-        public BindingList<ProductModel> Products
+        public BindingList<ProductDisplayModel> Products
         {
             get { return _products; }
             set
@@ -47,9 +53,9 @@ namespace RMDesktopUI.ViewModels
             }
         }
 
-        private ProductModel _slectedProduct;
+        private ProductDisplayModel _slectedProduct;
 
-        public ProductModel SelectedProduct
+        public ProductDisplayModel SelectedProduct
         {
             get { return _slectedProduct; }
             set
@@ -61,9 +67,9 @@ namespace RMDesktopUI.ViewModels
         }
 
 
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
-        public BindingList<CartItemModel> Cart
+        public BindingList<CartItemDisplayModel> Cart
         {
             get { return _cart; }
             set
@@ -88,21 +94,17 @@ namespace RMDesktopUI.ViewModels
 
         public void AddToCart()
         {
-            var existingItem = Cart.FirstOrDefault(x => x.ProductModel == SelectedProduct);
+            var existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
             if (existingItem != null)
             {
                 existingItem.QuantityInCart += ItemQuantity;
-
-                //Hack - This should be change for somthing better.
-                Cart.Remove(existingItem);
-                Cart.Add(existingItem);
             }
             else
             {
-                CartItemModel cartItem = new CartItemModel()
+                CartItemDisplayModel cartItem = new CartItemDisplayModel()
                 {
-                    ProductModel = SelectedProduct,
+                    Product = SelectedProduct,
                     QuantityInCart = ItemQuantity
                 };
                 Cart.Add(cartItem);
@@ -153,7 +155,7 @@ namespace RMDesktopUI.ViewModels
             decimal subtotal = 0;
             foreach (var item in Cart)
             {
-                subtotal += (item.QuantityInCart * item.ProductModel.RetailPrice);
+                subtotal += (item.QuantityInCart * item.Product.RetailPrice);
             }
             return subtotal;
         }
@@ -172,8 +174,8 @@ namespace RMDesktopUI.ViewModels
             decimal taxRate = _configHelper.GetTaxRate() / 100;
 
             taxAmount = Cart
-                .Where(x => x.ProductModel.IsTaxable)
-                .Sum(x => x.QuantityInCart * x.ProductModel.RetailPrice * taxRate);
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.QuantityInCart * x.Product.RetailPrice * taxRate);
             return taxAmount;
         }
 
@@ -211,7 +213,7 @@ namespace RMDesktopUI.ViewModels
             {
                 sale.SaleDetails.Add(new SaleDetailModel
                 {
-                    ProductId = item.ProductModel.Id,
+                    ProductId = item.Product.Id,
                     Quantity = item.QuantityInCart
                 });
             }

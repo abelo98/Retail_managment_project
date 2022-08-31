@@ -9,9 +9,6 @@ namespace RMDesktopUI.Library.Models
     public class CartItemModel
     {
         public ProductModel ProductModel { get; set; }
-
         public int QuantityInCart { get; set; }
-
-        public string DisplayText { get { return $"{ProductModel.ProductName} ({QuantityInCart})"; } }
     }
 }

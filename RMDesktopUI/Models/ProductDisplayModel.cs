@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RMDesktopUI.Models
+{
+    public class ProductDisplayModel : INotifyPropertyChanged
+    {
+        public int Id { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public decimal RetailPrice { get; set; }
+        public bool IsTaxable { get; set; }
+
+        private int _quantityInStock;
+
+        public int QuantityInStock
+        {
+            get { return _quantityInStock; }
+            set
+            {
+                _quantityInStock = value;
+                CallPropertyChanged(nameof(QuantityInStock));
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void CallPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+    }
+}
