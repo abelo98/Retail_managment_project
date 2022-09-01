@@ -13,11 +13,11 @@ namespace RMDesktopUI.Library.Api
         private HttpClient _apiClient;
         private ILoggedInUserModel _loggedInUserModel;
 
-        public HttpClient ApiClient { get { return _apiClient; }}
+        public HttpClient ApiClient { get { return _apiClient; } }
 
         public APIHelper(ILoggedInUserModel loggedInUserModel)
         {
-            _loggedInUserModel = loggedInUserModel; 
+            _loggedInUserModel = loggedInUserModel;
             InitializeClient();
         }
 
@@ -55,6 +55,10 @@ namespace RMDesktopUI.Library.Api
             }
         }
 
+        public void ResetUser()
+        {
+            _apiClient.DefaultRequestHeaders.Clear();
+        }
         public async Task GetLoggedInUserInfo(string token)
         {
             _apiClient.DefaultRequestHeaders.Clear();
