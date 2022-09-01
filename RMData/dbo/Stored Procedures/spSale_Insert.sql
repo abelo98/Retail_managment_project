@@ -12,5 +12,5 @@ begin
 	insert into dbo.Sale(CashierId,SaleDate,Subtotal,Tax,Total)
 	values(@CashierId, @SaleDate,@Subtotal,@Tax,@Total);
 
-	select @Id = @@Identity
+	select @Id = Scope_Identity()
 end
