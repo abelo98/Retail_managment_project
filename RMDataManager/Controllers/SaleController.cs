@@ -20,5 +20,13 @@ namespace RMDataManager.Controllers
             string cashierId = RequestContext.Principal.Identity.GetUserId();
             saleData.SaveSale(sale, cashierId);
         }
+
+        [HttpGet]
+        [Route("GetSalesReport")]
+        public List<SaleReportModel> GetSalesReport()
+        {
+            SaleData data = new SaleData();
+            return data.GetSalesReport();
+        }
     }
 }
